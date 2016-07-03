@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>React - Template</title>
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+    <script src="../../js/react.min.js"></script>
+    <script src="../../js/react-dom.min.js"></script>
+    <script src="../../js/browser.min.js"></script>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script type="text/babel">
+
+    /*
+    How it Works
+    ------------
+    The ListHandler has a textfield and add item button which returns a new ListItem whenever it is called.
+    It also stores an array of comments using states (this.state.comments). We have to store the functions to remove and edit
+    items from the array in here because we can reference it in the ListHandler. A listitem has a bullet and a remove button.
+    The remove button fires the remove method we passed in from the ListHandler using properties (this.props.delete). To display the
+    comments array (which is stored as a state local to the ListHandler component), we must make a display function which returns a new
+    ListItem with the item in the array. We use the .map function to run each item of an array through the function, so it returns
+    a new ListItem for each item in the array.
+     */
+
+    var ListItem = React.createClass({
+        render: function () {
+            return (
+                    <div>
+                        <ul>
+                            <li>{this.props.children}</li>
+                            <button onClick={this.removeFunc}>Remove</button>
+                        </ul>
+                    </div>
+            );
+        },
+        removeFunc: function () {
+            this.props.delete(this.props.index);
+        }
+    });
+
+    var ListHandler = React.createClass({
+        getInitialState: function () {
+            return {
+                comments: [] //initialize empty comments array
+            }
+        },
+
+        displayItems: function (item, i) {
+            return(
+                    <ListItem key={i} index={i} delete={this.delItem}>{item}</ListItem>
+            )
+        },
+
+        render: function () {
+            return(
+                    <div>
+                        <textarea ref="newcomm"></textarea>
+                        <br></br>
+                        <button onClick={this.addItem}>Add New Item</button>
+                        <br />
+                        {this.state.comments.map(this.displayItems)}
+                    </div>
+            );
+        },
+        addItem: function () {
+            console.log(this.refs.newcomm.value);
+            var arr = this.state.comments;
+            arr.push(this.refs.newcomm.value);
+            this.setState({comments: arr});
+            console.log(arr);
+        },
+        delItem: function(i){
+            var arr = this.state.comments;
+            arr.splice(i, 1);
+            this.setState({comments: arr})
+        }
+
+    });
+
+    ReactDOM.render(
+            <ListHandler />
+            , document.getElementById("container")
+    );
+
+</script>
+
+</body>
+</html>
